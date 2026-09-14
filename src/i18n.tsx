@@ -276,6 +276,9 @@ const es: Record<string, string> = {
 
 const en: Record<string, string> = {
   ...es,
+  de: "of",
+  "Para VSL": "For VSL",
+  "Para Editores": "For Editors",
   "Editor Nova Era | Edição, IA e sua próxima fase":
     "Editor Nova Era | Editing, AI and your next chapter",
   "Pular para o conteúdo": "Skip to content",
