@@ -3,7 +3,9 @@ import { ArrowUpRight, X } from "lucide-react";
 import { testimonials } from "./content";
 import { CarouselControls, CheckList, SectionHeading } from "./components";
 import { useSwipe } from "./useSwipe";
+import { useI18n } from "./i18n";
 export function Testimonials({ editor }: { editor: boolean }) {
+  const { t } = useI18n();
   const [testimonial, setTestimonial] = useState(0);
   const dialog = useRef<HTMLDialogElement>(null);
   const swipe = useSwipe((direction) => {
@@ -18,51 +20,56 @@ export function Testimonials({ editor }: { editor: boolean }) {
       <section className="section" id="resultados">
         <div className="container">
           <SectionHeading
-            eyebrow="Experiências de quem já começou"
-            description="Veja os relatos compartilhados por alunos do Editor Nova Era."
+            eyebrow={t("Experiências de quem já começou")}
+            description={t(
+              "Veja os relatos compartilhados por alunos do Editor Nova Era.",
+            )}
           >
-            Da aula para a <em>vida real.</em>
+            {t("Da aula para a")} <em>{t("vida real.")}</em>
           </SectionHeading>
           <div className="proof-card swipe-surface" {...swipe.handlers}>
             <div className="proof-top">
-              <span className="small-tag">Editor Nova Era · Depoimentos</span>
+              <span className="small-tag">
+                Editor Nova Era · {t("Depoimentos")}
+              </span>
               <span className="mono">
-                Relato {testimonial + 1} de {testimonials.length}
+                {t("Relato")} {testimonial + 1} {t("de")} {testimonials.length}
               </span>
             </div>
             <div className="proof-content">
               <div>
-                <p className="eyebrow">Cada trajetória é única</p>
-                <h3>O próximo passo começa com uma nova habilidade.</h3>
+                <p className="eyebrow">{t("Cada trajetória é única")}</p>
+                <h3>{t("O próximo passo começa com uma nova habilidade.")}</h3>
                 <p>
-                  Técnica, ferramentas e prática para transformar a forma como
-                  você edita.
+                  {t(
+                    "Técnica, ferramentas e prática para transformar a forma como você edita.",
+                  )}
                 </p>
                 <CheckList
-                  items={
-                    editor
-                      ? [
-                          "Edição para Direct Response",
-                          "IA aplicada à criação de vídeos",
-                          "Clientes e posicionamento profissional",
-                        ]
-                      : [
-                          "Criativos e VSLs para sua operação",
-                          "Inteligência artificial na edição",
-                          "Mais autonomia no processo criativo",
-                        ]
-                  }
+                  items={(editor
+                    ? [
+                        "Edição para Direct Response",
+                        "IA aplicada à criação de vídeos",
+                        "Clientes e posicionamento profissional",
+                      ]
+                    : [
+                        "Criativos e VSLs para sua operação",
+                        "Inteligência artificial na edição",
+                        "Mais autonomia no processo criativo",
+                      ]
+                  ).map(t)}
                 />
                 <p className="fine-print">
-                  Relatos individuais. Resultados não representam garantia de
-                  desempenho ou faturamento.
+                  {t(
+                    "Relatos individuais. Resultados não representam garantia de desempenho ou faturamento.",
+                  )}
                 </p>
               </div>
               <button
                 className={`testimonial-image ${swipe.dragging ? "is-dragging" : ""}`}
                 style={{ transform: `translateX(${swipe.offset * 0.35}px)` }}
                 onClick={() => dialog.current?.showModal()}
-                aria-label={`Ampliar depoimento ${testimonial + 1}`}
+                aria-label={`${t("Ampliar depoimento")} ${testimonial + 1}`}
               >
                 <img
                   className={
@@ -70,11 +77,11 @@ export function Testimonials({ editor }: { editor: boolean }) {
                   }
                   draggable={false}
                   src={`/assets/${testimonials[testimonial]}`}
-                  alt={`Depoimento de aluno ${testimonial + 1}, publicado no Editor Nova Era`}
+                  alt={`${t("Depoimento de aluno")} ${testimonial + 1}, ${t("publicado no Editor Nova Era")}`}
                   loading="lazy"
                 />
                 <span>
-                  Ampliar depoimento <ArrowUpRight size={16} />
+                  {t("Ampliar depoimento")} <ArrowUpRight size={16} />
                 </span>
               </button>
             </div>
@@ -97,7 +104,7 @@ export function Testimonials({ editor }: { editor: boolean }) {
         <div>
           <button
             className="dialog-close arrow-button"
-            aria-label="Fechar depoimento"
+            aria-label={t("Fechar depoimento")}
             onClick={() => dialog.current?.close()}
           >
             <X />
@@ -105,7 +112,7 @@ export function Testimonials({ editor }: { editor: boolean }) {
           <img
             className={testimonial === 0 ? "trim-source-border" : undefined}
             src={`/assets/${testimonials[testimonial]}`}
-            alt={`Depoimento ampliado de aluno ${testimonial + 1}`}
+            alt={`${t("Depoimento ampliado de aluno")} ${testimonial + 1}`}
           />
         </div>
       </dialog>

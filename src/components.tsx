@@ -5,6 +5,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import type { ReactNode } from "react";
+import { useI18n } from "./i18n";
 export function SectionHeading({
   eyebrow,
   children,
@@ -24,16 +25,17 @@ export function SectionHeading({
 }
 export function Cta({
   href,
-  children = "Quero começar agora",
+  children,
   secondary = false,
 }: {
   href: string;
   children?: ReactNode;
   secondary?: boolean;
 }) {
+  const { t } = useI18n();
   return (
     <a className={`cta ${secondary ? "cta-secondary" : ""}`} href={href}>
-      {children}
+      {children ?? t("Quero começar agora")}
       {!secondary && <ArrowRight size={18} aria-hidden="true" />}
     </a>
   );
@@ -67,11 +69,16 @@ export function CarouselControls({
   onPrevious?: () => void;
   onNext?: () => void;
 }) {
+  const { t } = useI18n();
+  const previousLabel =
+    label === "Aula" ? t("Aula anterior") : t("Depoimento anterior");
+  const nextLabel =
+    label === "Aula" ? t("Próxima aula") : t("Próximo depoimento");
   return (
     <div className={`carousel-controls ${className ?? ""}`}>
       <button
         className="arrow-button"
-        aria-label={`${label} anterior`}
+        aria-label={previousLabel}
         onClick={() =>
           onPrevious ? onPrevious() : onChange((index - 1 + count) % count)
         }
@@ -82,7 +89,7 @@ export function CarouselControls({
         {Array.from({ length: count }, (_, i) => (
           <button
             key={i}
-            aria-label={`${label} ${i + 1}`}
+            aria-label={`${t(label)} ${i + 1}`}
             aria-pressed={index === i}
             onClick={() => onChange(i)}
           >
@@ -92,7 +99,7 @@ export function CarouselControls({
       </div>
       <button
         className="arrow-button"
-        aria-label={`${label === "Aula" ? "Próxima" : "Próximo"} ${label.toLowerCase()}`}
+        aria-label={nextLabel}
         onClick={() => (onNext ? onNext() : onChange((index + 1) % count))}
       >
         <ChevronRight size={22} />

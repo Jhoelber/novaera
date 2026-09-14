@@ -72,3 +72,31 @@ final result: passed
 - Dez testes totais aprovados, incluindo os quatro de empacotamento. TypeScript e build de produção aprovados.
 - Navegador em largura mobile: aulas Os Sites → Vem por aí → Os Sites e depoimento 1 → 2 confirmados por arraste com mouse. A sequência de captura do toque foi validada por teste automatizado; não foi testada em aparelho físico.
 - Moldura preta dos depoimentos removida; no primeiro print, recorte visual elimina a borda embutida na imagem sem alterar seu texto.
+
+## Iteração do carrossel contínuo — 14/09/2026
+
+**Fonte visual:** `C:/Users/jhoelber/AppData/Local/Temp/codex-clipboard-01e7cb17-14dc-4d71-80f5-0e1636ecd753.png`, 1728×678 px, e estado anterior indicado em `C:/Users/jhoelber/AppData/Local/Temp/codex-clipboard-3577c2cd-1fee-40db-8cab-98fc221f97ad.png`, 1116×672 px.
+
+**Implementação:** `evidence/carousel-fluid-desktop.png`, captura de 1101×640 px com viewport CSS 1116×672, e `evidence/carousel-fluid-mobile.png`, captura de 375×812 px com viewport CSS 390×844. Densidade padrão do navegador. A fonte ampla foi comparada por proporção horizontal porque sua captura possui outra largura; o estado anterior e a implementação usam a mesma faixa de viewport.
+
+**Estado comparado:** trilha selecionada, card central ativo, cards vizinhos visíveis, setas laterais e indicadores inferiores. A comparação completa e a região do carrossel são a mesma área de interesse; não foi necessário recorte adicional porque imagens, textos, bordas e controles estão legíveis.
+
+### Histórico dos achados e correções
+
+- [P1 corrigido] A troca substituía o conteúdo dos três slots fixos e fazia o card central parecer surgir. Os cards agora mantêm uma identidade virtual estável: o central se move para a lateral enquanto o vizinho percorre o caminho até o centro. A leitura dos transforms durante a animação confirmou ambos os elementos em posições intermediárias.
+- [P2 corrigido] As setas ficavam junto aos indicadores abaixo. Elas agora estão sobre as laterais do conjunto no desktop, na mesma faixa proporcional da referência; em 390 px ficam nas bordas para preservar a área do conteúdo. Os indicadores permanecem abaixo.
+- [P2 corrigido] Trilhas com mais de três aulas exibiam fragmentos dos cards mais distantes. Esses elementos continuam no fluxo para sustentar a animação, mas ficam com opacidade zero e sem interação; somente esquerda, centro e direita permanecem visíveis.
+- [P2 corrigido] O zoom existia apenas no card central. Em dispositivos com mouse, as imagens dos três cards visíveis agora ampliam 6,5% em 0,65 s, dentro da moldura e sem deslocar o layout. O movimento é desativado pela preferência `prefers-reduced-motion` já existente.
+
+### Verificação final
+
+- Avanço por botão e arraste conferidos no desktop e em 390 px; o card anterior sai enquanto o seguinte entra e assume o centro.
+- Trilha Editor DR, com cinco aulas, apresentou exatamente três cards visíveis; os dois cards de apoio tiveram opacidade computada igual a zero.
+- Hover do card lateral esquerdo apresentou escala computada intermediária de 1,06294 durante a animação; centro e direita permaneceram em 1 até receberem hover.
+- Viewport mobile apresentou `scrollWidth` e `clientWidth` iguais a 375 px, sem rolagem horizontal.
+- Fontes, textos, paleta, imagens e tratamento das bordas continuam consistentes com a avaliação anterior.
+- Build TypeScript/Vite aprovado, dez testes aprovados e console local sem avisos ou erros.
+
+Sem achados P0/P1/P2 pendentes nesta iteração.
+
+final result: passed

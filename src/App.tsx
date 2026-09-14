@@ -10,6 +10,7 @@ import {
   BriefcaseBusiness,
   ShieldCheck,
   X,
+  Languages,
 } from "lucide-react";
 import { offers, tracks, checkoutUrl } from "./content";
 import type { Audience } from "./content";
@@ -18,9 +19,11 @@ import { CourseGallery } from "./CourseGallery";
 import { Testimonials } from "./Testimonials";
 import { Faq } from "./Faq";
 import { Offer, FinalCta } from "./Offer";
+import { languageOptions, useI18n } from "./i18n";
 
 const icons = [MonitorPlay, Layers3, KeyRound, Sparkles, Users, TrendingUp];
 export function App() {
+  const { language, setLanguage, t } = useI18n();
   const [audience, setAudience] = useState<Audience>("editor");
   const offer = offers[audience];
   const editor = audience === "editor";
@@ -29,85 +32,118 @@ export function App() {
   const facts = [
     {
       icon: Clock3,
-      title: "Online, no seu ritmo",
-      text: "Assista às aulas e evolua de acordo com a sua rotina.",
+      title: t("Online, no seu ritmo"),
+      text: t("Assista às aulas e evolua de acordo com a sua rotina."),
     },
     {
       icon: KeyRound,
-      title: "Acesso imediato",
-      text: "Comece a aprender após a confirmação do pagamento.",
+      title: t("Acesso imediato"),
+      text: t("Comece a aprender após a confirmação do pagamento."),
     },
     {
       icon: Sparkles,
-      title: "Edição + inteligência artificial",
-      text: "Técnica e ferramentas de IA no mesmo processo criativo.",
+      title: t("Edição + inteligência artificial"),
+      text: t("Técnica e ferramentas de IA no mesmo processo criativo."),
     },
     {
       icon: TrendingUp,
-      title: editor ? "Do zero ao profissional" : "Autonomia para sua operação",
+      title: editor
+        ? t("Do zero ao profissional")
+        : t("Autonomia para sua operação"),
       text: editor
-        ? "Da primeira edição à construção da sua carreira."
-        : "Edite seus próprios vídeos com mais agilidade.",
+        ? t("Da primeira edição à construção da sua carreira.")
+        : t("Edite seus próprios vídeos com mais agilidade."),
     },
   ];
   return (
     <>
       <a className="skip-link" href="#conteudo">
-        Pular para o conteúdo
+        {t("Pular para o conteúdo")}
       </a>
       <header className="site-header">
-        <a href="#" aria-label="Editor Nova Era — início" className="brand">
-          EDITOR<span>NOVA ERA</span>
-        </a>
+        <div className="site-header-inner">
+          <a
+            href="#"
+            aria-label={t("Editor Nova Era — início")}
+            className="brand"
+          >
+            EDITOR<span>NOVA ERA</span>
+          </a>
+          <label className="language-picker">
+            <Languages size={17} aria-hidden="true" />
+            <span className="sr-only">{t("Idioma do site")}</span>
+            <select
+              aria-label={t("Idioma do site")}
+              value={language}
+              onChange={(event) =>
+                setLanguage(event.target.value as typeof language)
+              }
+            >
+              {languageOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
       </header>
       <main id="conteudo">
         <section className="hero">
           <div className="container hero-inner">
-            <div className="audience-switch" aria-label="Escolha seu perfil">
+            <div
+              className="audience-switch"
+              aria-label={t("Escolha seu perfil")}
+            >
               <button
                 aria-pressed={editor}
                 onClick={() => setAudience("editor")}
               >
-                Sou Editor
+                {t("Sou Editor")}
               </button>
               <button
                 aria-pressed={!editor}
                 onClick={() => setAudience("operation")}
               >
-                Sou Dono de Operação
+                {t("Sou Dono de Operação")}
               </button>
             </div>
             <p className="eyebrow hero-eyebrow">
               {editor
-                ? "Formação completa de editor"
-                : "Edição para donos de operação"}
+                ? t("Formação completa de editor")
+                : t("Edição para donos de operação")}
             </p>
             <h1>
               {editor ? (
                 <>
-                  De editor iniciante a <em>R$10.000/mês.</em>
+                  {t("De editor iniciante a")} <em>R$10.000/mês.</em>
                   <br />
-                  Construa sua carreira com <em>edição de vídeo.</em>
+                  {t("Construa sua carreira com")}{" "}
+                  <em>{t("edição de vídeo.")}</em>
                 </>
               ) : (
                 <>
-                  Edite seus <em>próprios vídeos.</em>
+                  {t("Edite seus")} <em>{t("próprios vídeos.")}</em>
                   <br />
-                  Tenha o controle da <em>sua operação.</em>
+                  {t("Tenha o controle da")} <em>{t("sua operação.")}</em>
                 </>
               )}
             </h1>
-            <p className="hero-description">{offer.description}</p>
+            <p className="hero-description">{t(offer.description)}</p>
             <div className="hero-actions">
               <Cta href={href} />
               <Cta href="#trilhas" secondary>
-                Conheça as trilhas
+                {t("Conheça as trilhas")}
               </Cta>
             </div>
             <p className="hero-note">
               {editor
-                ? "Uma formação para buscar sua meta. Resultados variam conforme a aplicação."
-                : "Direct Response e IA. Dois módulos, um novo nível de autonomia."}
+                ? t(
+                    "Uma formação para buscar sua meta. Resultados variam conforme a aplicação.",
+                  )
+                : t(
+                    "Direct Response e IA. Dois módulos, um novo nível de autonomia.",
+                  )}
             </p>
             <div className="benefits-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
               {facts.map(({ icon: Icon, title, text }) => (
@@ -127,44 +163,52 @@ export function App() {
         <section className="section journey-section">
           <div className="container">
             <SectionHeading
-              eyebrow="O método Editor Nova Era"
+              eyebrow={t("O método Editor Nova Era")}
               description={
                 editor
-                  ? "Uma jornada que conecta edição, inteligência artificial e a construção do seu negócio."
-                  : "Aprenda o essencial para assumir o controle da produção dos seus vídeos."
+                  ? t(
+                      "Uma jornada que conecta edição, inteligência artificial e a construção do seu negócio.",
+                    )
+                  : t(
+                      "Aprenda o essencial para assumir o controle da produção dos seus vídeos.",
+                    )
               }
             >
               {editor ? (
                 <>
-                  Mais que editar. Aprenda a <em>evoluir.</em>
+                  {t("Mais que editar. Aprenda a")} <em>{t("evoluir.")}</em>
                 </>
               ) : (
                 <>
-                  Da ideia à edição, com <em>autonomia.</em>
+                  {t("Da ideia à edição, com")} <em>{t("autonomia.")}</em>
                 </>
               )}
             </SectionHeading>
             <div className="journey-grid grid grid-cols-1 md:grid-cols-2">
-              {available.map((t, i) => {
+              {available.map((trackItem, i) => {
                 const Icon =
-                  icons[tracks.findIndex((track) => track.id === t.id)];
+                  icons[tracks.findIndex((track) => track.id === trackItem.id)];
                 return (
-                  <article className="journey-card" key={t.id}>
+                  <article className="journey-card" key={trackItem.id}>
                     <div className="flex items-center justify-between gap-4">
                       <span className="small-tag">
-                        TRILHA {String(i + 1).padStart(2, "0")}
+                        {t("TRILHA")} {String(i + 1).padStart(2, "0")}
                       </span>
                       <span className="icon-box">
                         <Icon size={22} />
                       </span>
                     </div>
-                    <h3>{t.title}</h3>
-                    <h4>{t.subtitle}</h4>
-                    <p>{t.description}</p>
+                    <h3>{t(trackItem.title)}</h3>
+                    <h4>{t(trackItem.subtitle)}</h4>
+                    <p>{t(trackItem.description)}</p>
                     <div className="journey-deliverables">
-                      <p className="micro-heading">Dentro desta trilha</p>
+                      <p className="micro-heading">
+                        {t("Dentro desta trilha")}
+                      </p>
                       <CheckList
-                        items={t.lessons.slice(0, 3).map((l) => l[0])}
+                        items={trackItem.lessons
+                          .slice(0, 3)
+                          .map((l) => t(l[0]))}
                       />
                     </div>
                   </article>
@@ -172,22 +216,24 @@ export function App() {
               })}
             </div>
             <div className="comparison">
-              <SectionHeading eyebrow="O que está travando seu próximo passo?">
-                {offer.problem}
+              <SectionHeading
+                eyebrow={t("O que está travando seu próximo passo?")}
+              >
+                {t(offer.problem)}
               </SectionHeading>
               <div className="comparison-head">
-                <span>O desafio</span>
-                <span>O que você vai desenvolver</span>
+                <span>{t("O desafio")}</span>
+                <span>{t("O que você vai desenvolver")}</span>
               </div>
               {offer.problems.map((problem, i) => (
                 <div className="comparison-row" key={problem}>
                   <p>
                     <X size={18} />
-                    {problem}
+                    {t(problem)}
                   </p>
                   <p>
                     <ShieldCheck size={18} />
-                    {offer.solutions[i]}
+                    {t(offer.solutions[i])}
                   </p>
                 </div>
               ))}
@@ -197,10 +243,12 @@ export function App() {
         <section className="section skills-section">
           <div className="container">
             <SectionHeading
-              eyebrow="Conhecimento que vira prática"
-              description="Um conjunto de habilidades para acompanhar a nova era da edição."
+              eyebrow={t("Conhecimento que vira prática")}
+              description={t(
+                "Um conjunto de habilidades para acompanhar a nova era da edição.",
+              )}
             >
-              Seu próximo repertório.
+              {t("Seu próximo repertório.")}
             </SectionHeading>
             <div className="skills-grid grid grid-cols-1 md:grid-cols-3">
               {(editor
@@ -256,8 +304,8 @@ export function App() {
               ).map(([Icon, title, text]) => (
                 <article className="skill-card" key={title}>
                   <Icon size={42} strokeWidth={1.8} />
-                  <h3>{title}</h3>
-                  <p>{text}</p>
+                  <h3>{t(title)}</h3>
+                  <p>{t(text)}</p>
                 </article>
               ))}
             </div>
@@ -272,8 +320,8 @@ export function App() {
           EDITOR<span>NOVA ERA</span>
         </a>
         <p>
-          Editor Nova Era · {new Date().getFullYear()} · Todos os direitos
-          reservados.
+          Editor Nova Era · {new Date().getFullYear()} ·{" "}
+          {t("Todos os direitos reservados.")}
         </p>
       </footer>
     </>

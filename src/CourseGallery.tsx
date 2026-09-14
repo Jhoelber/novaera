@@ -5,7 +5,9 @@ import { tracks } from "./content";
 import type { Audience } from "./content";
 import { CarouselControls, SectionHeading } from "./components";
 import { useSwipe } from "./useSwipe";
+import { useI18n } from "./i18n";
 export function CourseGallery({ audience }: { audience: Audience }) {
+  const { t } = useI18n();
   const available = tracks.filter(
     (t) => audience === "editor" || ["dr", "ai"].includes(t.id),
   );
@@ -39,28 +41,30 @@ export function CourseGallery({ audience }: { audience: Audience }) {
     <section className="gallery-section" id="trilhas">
       <div className="container">
         <SectionHeading
-          eyebrow="O que você vai aprender"
-          description="Técnica, ferramentas e prática. Conheça o conteúdo que faz parte da sua próxima fase."
+          eyebrow={t("O que você vai aprender")}
+          description={t(
+            "Técnica, ferramentas e prática. Conheça o conteúdo que faz parte da sua próxima fase.",
+          )}
         >
-          Sua jornada dentro do <em>Editor Nova Era.</em>
+          {t("Sua jornada dentro do")} <em>Editor Nova Era.</em>
         </SectionHeading>
         <div
           className="track-tabs"
           role="tablist"
-          aria-label="Trilhas do curso"
+          aria-label={t("Trilhas do curso")}
         >
-          {available.map((t, index) => (
+          {available.map((trackOption, index) => (
             <button
               ref={(element) => {
                 tabRefs.current[index] = element;
               }}
-              id={`tab-${t.id}`}
+              id={`tab-${trackOption.id}`}
               role="tab"
-              aria-selected={track.id === t.id}
-              tabIndex={track.id === t.id ? 0 : -1}
+              aria-selected={track.id === trackOption.id}
+              tabIndex={track.id === trackOption.id ? 0 : -1}
               aria-controls="track-panel"
-              key={t.id}
-              onClick={() => changeTrack(t.id)}
+              key={trackOption.id}
+              onClick={() => changeTrack(trackOption.id)}
               onKeyDown={(event) => {
                 if (
                   !["ArrowLeft", "ArrowRight", "Home", "End"].includes(
@@ -82,7 +86,7 @@ export function CourseGallery({ audience }: { audience: Audience }) {
                 tabRefs.current[next]?.focus();
               }}
             >
-              {t.title}
+              {t(trackOption.title)}
             </button>
           ))}
         </div>
@@ -94,9 +98,9 @@ export function CourseGallery({ audience }: { audience: Audience }) {
           <div className="track-intro">
             <span className="small-tag">
               <Sparkles size={13} />
-              {track.subtitle}
+              {t(track.subtitle)}
             </span>
-            <p>{track.description}</p>
+            <p>{t(track.description)}</p>
           </div>
           <div className="gallery-carousel-shell">
             <div
@@ -133,14 +137,14 @@ export function CourseGallery({ audience }: { audience: Audience }) {
                     <img
                       draggable={false}
                       src={`/assets/${lesson[1]}`}
-                      alt={lesson[0]}
+                      alt={t(lesson[0])}
                       loading="lazy"
                       width="400"
                       height="600"
                     />
                     <figcaption>
-                      <span>{track.title}</span>
-                      <strong>{lesson[0]}</strong>
+                      <span>{t(track.title)}</span>
+                      <strong>{t(lesson[0])}</strong>
                     </figcaption>
                   </figure>
                 );
@@ -159,8 +163,9 @@ export function CourseGallery({ audience }: { audience: Audience }) {
         </div>
         {audience === "operation" && (
           <p className="fine-print text-center">
-            Seu acesso inclui Editor DR e Edite com IA. As outras quatro trilhas
-            fazem parte da formação completa.
+            {t(
+              "Seu acesso inclui Editor DR e Edite com IA. As outras quatro trilhas fazem parte da formação completa.",
+            )}
           </p>
         )}
       </div>

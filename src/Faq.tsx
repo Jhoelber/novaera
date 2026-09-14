@@ -1,5 +1,7 @@
 import { SectionHeading } from "./components";
+import { useI18n } from "./i18n";
 export function Faq({ editor }: { editor: boolean }) {
+  const { t } = useI18n();
   const questions = [
     {
       q: editor
@@ -37,14 +39,14 @@ export function Faq({ editor }: { editor: boolean }) {
   return (
     <section className="section faq-section">
       <div className="container narrow">
-        <SectionHeading eyebrow="Dúvidas frequentes">
-          Antes do seu <em>primeiro passo.</em>
+        <SectionHeading eyebrow={t("Dúvidas frequentes")}>
+          {t("Antes do seu")} <em>{t("primeiro passo.")}</em>
         </SectionHeading>
         <div className="faq-list">
           {questions.map((item) => (
             <details key={item.q}>
-              <summary>{item.q}</summary>
-              <p>{item.a}</p>
+              <summary>{t(item.q)}</summary>
+              <p>{t(item.a)}</p>
             </details>
           ))}
         </div>
