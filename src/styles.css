@@ -108,8 +108,9 @@ em {
   align-items: center;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   background: #00103a;
-  position: relative;
-  z-index: 2;
+  position: sticky;
+  top: 0;
+  z-index: 5;
 }
 .brand {
   display: flex;
@@ -388,22 +389,42 @@ em {
   margin-top: 23px;
 }
 .testimonial-image {
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  overflow: hidden;
-  background: #07162f;
-  padding: 12px;
-  transition: border-color 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 435px;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  transition: transform 0.2s;
 }
-.testimonial-image:hover {
-  border-color: var(--mint);
+.testimonial-image:hover span {
+  color: var(--mint);
 }
 .testimonial-image img {
-  width: 100%;
-  height: 340px;
+  width: auto;
+  height: auto;
+  max-height: 400px;
+  max-width: 100%;
   object-fit: contain;
-  background: #070e1c;
-  border-radius: 8px;
+  background: transparent;
+  border-radius: 12px;
+}
+.trim-source-border {
+  clip-path: inset(1% 0.8% round 10px);
+}
+.swipe-surface {
+  touch-action: pan-y pinch-zoom;
+}
+.swipe-surface img {
+  user-select: none;
+  -webkit-user-drag: none;
+}
+.is-dragging,
+.is-dragging .lesson-card {
+  transition: none;
+  cursor: grabbing;
 }
 .testimonial-image span {
   display: flex;
@@ -536,17 +557,19 @@ em {
   object-fit: cover;
 }
 .lesson-card.is-center {
-  transform: translateX(-50%);
+  transform: translateX(calc(-50% + var(--swipe-offset, 0px)));
   z-index: 2;
   border: 2px solid #00d5b26b;
   box-shadow: 0 0 22px #00d5b214;
 }
 .lesson-card.is-left {
-  transform: translateX(-143%) rotateY(19deg) scale(0.86);
+  transform: translateX(calc(-143% + var(--swipe-offset, 0px))) rotateY(19deg)
+    scale(0.86);
   opacity: 0.4;
 }
 .lesson-card.is-right {
-  transform: translateX(43%) rotateY(-19deg) scale(0.86);
+  transform: translateX(calc(43% + var(--swipe-offset, 0px))) rotateY(-19deg)
+    scale(0.86);
   opacity: 0.4;
 }
 .lesson-card figcaption {
@@ -1019,7 +1042,11 @@ footer p {
     font-size: 12px;
   }
   .testimonial-image img {
-    height: 290px;
+    height: auto;
+    max-height: 380px;
+  }
+  .testimonial-image {
+    min-height: 415px;
   }
   .gallery-section {
     padding: 76px 0;
@@ -1045,10 +1072,12 @@ footer p {
     border-radius: 15px;
   }
   .lesson-card.is-left {
-    transform: translateX(-130%) rotateY(18deg) scale(0.85);
+    transform: translateX(calc(-130% + var(--swipe-offset, 0px))) rotateY(18deg)
+      scale(0.85);
   }
   .lesson-card.is-right {
-    transform: translateX(30%) rotateY(-18deg) scale(0.85);
+    transform: translateX(calc(30% + var(--swipe-offset, 0px))) rotateY(-18deg)
+      scale(0.85);
   }
   .gallery-section .carousel-controls {
     margin-top: 5px;

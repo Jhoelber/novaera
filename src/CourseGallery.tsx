@@ -1,8 +1,10 @@
 import { useRef, useState } from "react";
+import type { CSSProperties } from "react";
 import { Sparkles } from "lucide-react";
 import { tracks } from "./content";
 import type { Audience } from "./content";
 import { CarouselControls, SectionHeading } from "./components";
+import { useSwipe } from "./useSwipe";
 export function CourseGallery({ audience }: { audience: Audience }) {
   const available = tracks.filter(
     (t) => audience === "editor" || ["dr", "ai"].includes(t.id),
@@ -11,6 +13,13 @@ export function CourseGallery({ audience }: { audience: Audience }) {
   const [slide, setSlide] = useState(0);
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const track = available.find((t) => t.id === selected) ?? available[0];
+  const swipe = useSwipe((direction) => {
+    setSlide(
+      (current) =>
+        (current + (direction === "next" ? 1 : -1) + track.lessons.length) %
+        track.lessons.length,
+    );
+  });
   function changeTrack(id: string) {
     setSelected(id);
     setSlide(0);
@@ -78,7 +87,12 @@ export function CourseGallery({ audience }: { audience: Audience }) {
             </span>
             <p>{track.description}</p>
           </div>
-          <div className="lesson-stage" aria-live="polite">
+          <div
+            className={`lesson-stage swipe-surface ${swipe.dragging ? "is-dragging" : ""}`}
+            style={{ "--swipe-offset": `${swipe.offset}px` } as CSSProperties}
+            aria-live="polite"
+            {...swipe.handlers}
+          >
             {[-1, 0, 1].map((offset) => {
               const i =
                 (slide + offset + track.lessons.length) % track.lessons.length;
@@ -90,6 +104,7 @@ export function CourseGallery({ audience }: { audience: Audience }) {
                   aria-hidden={offset !== 0}
                 >
                   <img
+                    draggable={false}
                     src={`/assets/${lesson[1]}`}
                     alt={lesson[0]}
                     loading="lazy"

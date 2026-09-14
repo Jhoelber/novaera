@@ -2,9 +2,17 @@ import { useRef, useState } from "react";
 import { ArrowUpRight, X } from "lucide-react";
 import { testimonials } from "./content";
 import { CarouselControls, CheckList, SectionHeading } from "./components";
+import { useSwipe } from "./useSwipe";
 export function Testimonials({ editor }: { editor: boolean }) {
   const [testimonial, setTestimonial] = useState(0);
   const dialog = useRef<HTMLDialogElement>(null);
+  const swipe = useSwipe((direction) => {
+    setTestimonial(
+      (current) =>
+        (current + (direction === "next" ? 1 : -1) + testimonials.length) %
+        testimonials.length,
+    );
+  });
   return (
     <>
       <section className="section" id="resultados">
@@ -15,7 +23,7 @@ export function Testimonials({ editor }: { editor: boolean }) {
           >
             Da aula para a <em>vida real.</em>
           </SectionHeading>
-          <div className="proof-card">
+          <div className="proof-card swipe-surface" {...swipe.handlers}>
             <div className="proof-top">
               <span className="small-tag">Editor Nova Era · Depoimentos</span>
               <span className="mono">
@@ -51,11 +59,16 @@ export function Testimonials({ editor }: { editor: boolean }) {
                 </p>
               </div>
               <button
-                className="testimonial-image"
+                className={`testimonial-image ${swipe.dragging ? "is-dragging" : ""}`}
+                style={{ transform: `translateX(${swipe.offset * 0.35}px)` }}
                 onClick={() => dialog.current?.showModal()}
                 aria-label={`Ampliar depoimento ${testimonial + 1}`}
               >
                 <img
+                  className={
+                    testimonial === 0 ? "trim-source-border" : undefined
+                  }
+                  draggable={false}
                   src={`/assets/${testimonials[testimonial]}`}
                   alt={`Depoimento de aluno ${testimonial + 1}, publicado no Editor Nova Era`}
                   loading="lazy"
@@ -90,6 +103,7 @@ export function Testimonials({ editor }: { editor: boolean }) {
             <X />
           </button>
           <img
+            className={testimonial === 0 ? "trim-source-border" : undefined}
             src={`/assets/${testimonials[testimonial]}`}
             alt={`Depoimento ampliado de aluno ${testimonial + 1}`}
           />
