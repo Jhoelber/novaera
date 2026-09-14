@@ -10,19 +10,30 @@ export function CourseGallery({ audience }: { audience: Audience }) {
     (t) => audience === "editor" || ["dr", "ai"].includes(t.id),
   );
   const [selected, setSelected] = useState(available[0].id);
-  const [slide, setSlide] = useState(0);
+  const [position, setPosition] = useState(0);
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const track = available.find((t) => t.id === selected) ?? available[0];
+  const slide =
+    ((position % track.lessons.length) + track.lessons.length) %
+    track.lessons.length;
   const swipe = useSwipe((direction) => {
-    setSlide(
-      (current) =>
-        (current + (direction === "next" ? 1 : -1) + track.lessons.length) %
-        track.lessons.length,
-    );
+    setPosition((current) => current + (direction === "next" ? 1 : -1));
   });
   function changeTrack(id: string) {
     setSelected(id);
-    setSlide(0);
+    setPosition(0);
+  }
+  function goToSlide(index: number) {
+    setPosition((current) => {
+      const currentIndex =
+        ((current % track.lessons.length) + track.lessons.length) %
+        track.lessons.length;
+      let distance = index - currentIndex;
+      if (Math.abs(distance) > track.lessons.length / 2) {
+        distance += distance > 0 ? -track.lessons.length : track.lessons.length;
+      }
+      return current + distance;
+    });
   }
   return (
     <section className="gallery-section" id="trilhas">
@@ -87,44 +98,64 @@ export function CourseGallery({ audience }: { audience: Audience }) {
             </span>
             <p>{track.description}</p>
           </div>
-          <div
-            className={`lesson-stage swipe-surface ${swipe.dragging ? "is-dragging" : ""}`}
-            style={{ "--swipe-offset": `${swipe.offset}px` } as CSSProperties}
-            aria-live="polite"
-            {...swipe.handlers}
-          >
-            {[-1, 0, 1].map((offset) => {
-              const i =
-                (slide + offset + track.lessons.length) % track.lessons.length;
-              const lesson = track.lessons[i];
-              return (
-                <figure
-                  className={`lesson-card ${offset === 0 ? "is-center" : offset < 0 ? "is-left" : "is-right"}`}
-                  key={`${track.id}-${offset}`}
-                  aria-hidden={offset !== 0}
-                >
-                  <img
-                    draggable={false}
-                    src={`/assets/${lesson[1]}`}
-                    alt={lesson[0]}
-                    loading="lazy"
-                    width="400"
-                    height="600"
-                  />
-                  <figcaption>
-                    <span>{track.title}</span>
-                    <strong>{lesson[0]}</strong>
-                  </figcaption>
-                </figure>
-              );
-            })}
+          <div className="gallery-carousel-shell">
+            <div
+              className={`lesson-stage swipe-surface ${swipe.dragging ? "is-dragging" : ""}`}
+              style={{ "--swipe-offset": `${swipe.offset}px` } as CSSProperties}
+              aria-live="polite"
+              {...swipe.handlers}
+            >
+              {Array.from({ length: track.lessons.length }, (_, item) => {
+                const firstOffset = -Math.floor((track.lessons.length - 1) / 2);
+                const offset = firstOffset + item;
+                const virtualPosition = position + offset;
+                const lessonIndex =
+                  ((virtualPosition % track.lessons.length) +
+                    track.lessons.length) %
+                  track.lessons.length;
+                const lesson = track.lessons[lessonIndex];
+                const placement =
+                  offset === 0
+                    ? "is-center"
+                    : offset === -1
+                      ? "is-left"
+                      : offset === 1
+                        ? "is-right"
+                        : offset < 0
+                          ? "is-far-left"
+                          : "is-far-right";
+                return (
+                  <figure
+                    className={`lesson-card ${placement}`}
+                    key={`${track.id}-${virtualPosition}`}
+                    aria-hidden={offset !== 0}
+                  >
+                    <img
+                      draggable={false}
+                      src={`/assets/${lesson[1]}`}
+                      alt={lesson[0]}
+                      loading="lazy"
+                      width="400"
+                      height="600"
+                    />
+                    <figcaption>
+                      <span>{track.title}</span>
+                      <strong>{lesson[0]}</strong>
+                    </figcaption>
+                  </figure>
+                );
+              })}
+            </div>
+            <CarouselControls
+              className="gallery-carousel-controls"
+              index={slide}
+              count={track.lessons.length}
+              onChange={goToSlide}
+              onPrevious={() => setPosition((current) => current - 1)}
+              onNext={() => setPosition((current) => current + 1)}
+              label="Aula"
+            />
           </div>
-          <CarouselControls
-            index={slide}
-            count={track.lessons.length}
-            onChange={setSlide}
-            label="Aula"
-          />
         </div>
         {audience === "operation" && (
           <p className="fine-print text-center">

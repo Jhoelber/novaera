@@ -55,18 +55,26 @@ export function CarouselControls({
   count,
   onChange,
   label,
+  className,
+  onPrevious,
+  onNext,
 }: {
   index: number;
   count: number;
   onChange: (index: number) => void;
   label: string;
+  className?: string;
+  onPrevious?: () => void;
+  onNext?: () => void;
 }) {
   return (
-    <div className="carousel-controls">
+    <div className={`carousel-controls ${className ?? ""}`}>
       <button
         className="arrow-button"
         aria-label={`${label} anterior`}
-        onClick={() => onChange((index - 1 + count) % count)}
+        onClick={() =>
+          onPrevious ? onPrevious() : onChange((index - 1 + count) % count)
+        }
       >
         <ChevronLeft size={22} />
       </button>
@@ -85,7 +93,7 @@ export function CarouselControls({
       <button
         className="arrow-button"
         aria-label={`${label === "Aula" ? "Próxima" : "Próximo"} ${label.toLowerCase()}`}
-        onClick={() => onChange((index + 1) % count)}
+        onClick={() => (onNext ? onNext() : onChange((index + 1) % count))}
       >
         <ChevronRight size={22} />
       </button>

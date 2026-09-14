@@ -536,6 +536,12 @@ em {
   margin: 30px auto 0;
   perspective: 1100px;
 }
+.gallery-carousel-shell {
+  position: relative;
+  max-width: 1050px;
+  margin: 0 auto;
+  padding-bottom: 55px;
+}
 .lesson-card {
   width: 290px;
   height: 430px;
@@ -547,14 +553,27 @@ em {
   overflow: hidden;
   background: #00103a;
   transition:
-    transform 0.35s,
-    opacity 0.35s;
+    transform 0.48s cubic-bezier(0.22, 0.72, 0, 1),
+    opacity 0.4s ease,
+    border-color 0.35s ease,
+    box-shadow 0.35s ease;
   box-shadow: 0 20px 45px #0003;
 }
 .lesson-card img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transform: scale(1);
+  transform-origin: center;
+  transition: transform 0.65s cubic-bezier(0.22, 0.72, 0, 1);
+}
+.lesson-card[aria-hidden="true"] {
+  pointer-events: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  .lesson-card.is-center:hover img {
+    transform: scale(1.065);
+  }
 }
 .lesson-card.is-center {
   transform: translateX(calc(-50% + var(--swipe-offset, 0px)));
@@ -571,6 +590,44 @@ em {
   transform: translateX(calc(43% + var(--swipe-offset, 0px))) rotateY(-19deg)
     scale(0.86);
   opacity: 0.4;
+}
+.lesson-card.is-far-left {
+  transform: translateX(calc(-225% + var(--swipe-offset, 0px))) rotateY(23deg)
+    scale(0.72);
+  opacity: 0.12;
+}
+.lesson-card.is-far-right {
+  transform: translateX(calc(125% + var(--swipe-offset, 0px))) rotateY(-23deg)
+    scale(0.72);
+  opacity: 0.12;
+}
+.gallery-carousel-controls {
+  position: absolute;
+  inset: 30px 0 0;
+  margin: 0;
+  pointer-events: none;
+}
+.gallery-carousel-controls .arrow-button,
+.gallery-carousel-controls .dots {
+  pointer-events: auto;
+}
+.gallery-carousel-controls .arrow-button {
+  position: absolute;
+  top: 205px;
+  transform: translateY(-50%);
+  z-index: 4;
+}
+.gallery-carousel-controls .arrow-button:first-child {
+  left: 18%;
+}
+.gallery-carousel-controls .arrow-button:last-child {
+  right: 18%;
+}
+.gallery-carousel-controls .dots {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
 }
 .lesson-card figcaption {
   position: absolute;
@@ -1079,8 +1136,28 @@ footer p {
     transform: translateX(calc(30% + var(--swipe-offset, 0px))) rotateY(-18deg)
       scale(0.85);
   }
-  .gallery-section .carousel-controls {
-    margin-top: 5px;
+  .lesson-card.is-far-left {
+    transform: translateX(calc(-200% + var(--swipe-offset, 0px))) rotateY(20deg)
+      scale(0.72);
+  }
+  .lesson-card.is-far-right {
+    transform: translateX(calc(100% + var(--swipe-offset, 0px))) rotateY(-20deg)
+      scale(0.72);
+  }
+  .gallery-carousel-shell {
+    padding-bottom: 50px;
+  }
+  .gallery-carousel-controls {
+    top: 24px;
+  }
+  .gallery-carousel-controls .arrow-button {
+    top: 172px;
+  }
+  .gallery-carousel-controls .arrow-button:first-child {
+    left: 2px;
+  }
+  .gallery-carousel-controls .arrow-button:last-child {
+    right: 2px;
   }
   .journey-card {
     padding: 25px;
