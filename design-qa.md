@@ -62,3 +62,13 @@ O deploy existente na Vercel retornava 404 em `/`, enquanto `/client/` expunha o
 Sem pendências P0/P1/P2 na implementação visual local. Publicação da correção na Vercel ainda pendente.
 
 final result: passed
+
+## Correção de arraste em telas de toque
+
+- Causa: o `lostpointercapture` da imagem, emitido ao transferir a captura implícita do toque para o carrossel, propagava até o contêiner e cancelava o gesto antes de `pointerup`.
+- Correção: cancelar somente quando o próprio contêiner perde a captura do ponteiro ativo. Eventos de outros ponteiros também não interrompem o gesto em andamento.
+- A lógica compartilhada por aulas e depoimentos foi isolada em `src/swipeGesture.ts` para testar a sequência de eventos sem dependências adicionais.
+- Seis testes de regressão aprovados: transferência da captura com avanço e retorno, rolagem vertical/toque curto, cancelamento nativo, perda real da captura e ponteiros secundários. O arraste também bloqueia o clique que abriria indevidamente o depoimento.
+- Dez testes totais aprovados, incluindo os quatro de empacotamento. TypeScript e build de produção aprovados.
+- Navegador em largura mobile: aulas Os Sites → Vem por aí → Os Sites e depoimento 1 → 2 confirmados por arraste com mouse. A sequência de captura do toque foi validada por teste automatizado; não foi testada em aparelho físico.
+- Moldura preta dos depoimentos removida; no primeiro print, recorte visual elimina a borda embutida na imagem sem alterar seu texto.
